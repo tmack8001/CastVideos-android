@@ -3,7 +3,7 @@
 CastVideos-android application shows how to cast videos from an android device in a way that is fully compliant with the Design Checklist.
 
 ## Dependencies
-* cast-companion-android : can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
+* CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
 
 ## Setup Instructions
 * Get a Chromecast device and set it up
@@ -12,6 +12,7 @@ You will get an App ID when you finish registering your application.
 * Setup the project dependencies
 * Insert your App ID in the strings.xml in the res directory of the project (look for `YOUR_APP_ID` in that file)
 * Compile and deploy to your Android device.
+* If using gradle, make sure you update build.gradle and settings.gradle to refelct the name you gave your CastCompanionLibrary project when you cloned it.
 
 ## References and How to report bugs
 * [Cast Developer Documentation](http://developers.google.com/cast/)
