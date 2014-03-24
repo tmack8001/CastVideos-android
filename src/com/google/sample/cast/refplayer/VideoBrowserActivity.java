@@ -182,6 +182,8 @@ public class VideoBrowserActivity extends ActionBarActivity {
     protected void onDestroy() {
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
+            mCastManager.removeMiniController(mMini);
+            mCastManager.clearContext();
         }
         super.onDestroy();
     }

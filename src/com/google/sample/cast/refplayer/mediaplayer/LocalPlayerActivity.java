@@ -408,6 +408,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         Log.d(TAG, "onDestroy() is called");
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
+            mCastManager.removeMiniController(mMini);
             mCastConsumer = null;
         }
         stopControllersTimer();
