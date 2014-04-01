@@ -409,6 +409,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
             mCastManager.removeMiniController(mMini);
+            mCastManager.clearContext(this);
             mCastConsumer = null;
         }
         stopControllersTimer();
