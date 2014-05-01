@@ -36,7 +36,7 @@ public class VideoBrowserListFragment extends ListFragment implements
 
     private static final String CATALOG_URL =
             "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/" +
-                    "videos-enhanced-b.json";
+                    "videos-enhanced-c.json";
     private VideoListAdapter mAdapter;
 
     /*

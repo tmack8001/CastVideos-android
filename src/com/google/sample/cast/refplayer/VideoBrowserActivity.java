@@ -48,7 +48,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        VideoCastManager.checkGooglePlaySevices(this);
+        VideoCastManager.checkGooglePlayServices(this);
         setContentView(R.layout.video_browser);
         ActionBar actionBar = getSupportActionBar();
 
