@@ -16,6 +16,7 @@
 
 package com.google.sample.cast.refplayer;
 
+import com.google.android.gms.cast.MediaStatus;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.IVideoCastConsumer;
@@ -135,16 +136,22 @@ public class VideoBrowserActivity extends ActionBarActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (!mCastManager.isConnected()) {
-            return super.onKeyDown(keyCode, event);
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            changeVolume(CastApplication.VOLUME_INCREMENT);
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            changeVolume(-CastApplication.VOLUME_INCREMENT);
-        } else {
-            return super.onKeyDown(keyCode, event);
+        if (mCastManager.isConnected()) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                changeVolume(CastApplication.VOLUME_INCREMENT);
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                changeVolume(-CastApplication.VOLUME_INCREMENT);
+            } else {
+                // we don't want to consume non-volume key events
+                return super.onKeyDown(keyCode, event);
+            }
+            if (mCastManager.getPlaybackStatus() == MediaStatus.PLAYER_STATE_PLAYING) {
+                return super.onKeyDown(keyCode, event);
+            } else {
+                return true;
+            }
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     private void changeVolume(double volumeIncrement) {
@@ -180,6 +187,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy is called");
         if (null != mCastManager) {
             mMini.removeOnMiniControllerChangedListener(mCastManager);
             mCastManager.removeMiniController(mMini);

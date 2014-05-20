@@ -51,6 +51,7 @@ import com.androidquery.AQuery;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaStatus;
 import com.google.sample.cast.refplayer.CastApplication;
 import com.google.sample.cast.refplayer.R;
 import com.google.sample.cast.refplayer.settings.CastPreference;
@@ -560,16 +561,22 @@ public class LocalPlayerActivity extends ActionBarActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mLocation == PlaybackLocation.LOCAL) {
-            return super.onKeyDown(keyCode, event);
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            onVolumeChange(CastApplication.VOLUME_INCREMENT);
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            onVolumeChange(-CastApplication.VOLUME_INCREMENT);
-        } else {
-            return super.onKeyDown(keyCode, event);
+        if (mCastManager.isConnected()) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                onVolumeChange(CastApplication.VOLUME_INCREMENT);
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                onVolumeChange(-CastApplication.VOLUME_INCREMENT);
+            } else {
+                // we don't want to consume non-volume key events
+                return super.onKeyDown(keyCode, event);
+            }
+            if (mCastManager.getPlaybackStatus() == MediaStatus.PLAYER_STATE_PLAYING) {
+                return super.onKeyDown(keyCode, event);
+            } else {
+                return true;
+            }
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     private void onVolumeChange(double volumeIncrement) {
