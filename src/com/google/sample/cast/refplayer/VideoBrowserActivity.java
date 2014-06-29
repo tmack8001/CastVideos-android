@@ -16,6 +16,8 @@
 
 package com.google.sample.cast.refplayer;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.google.android.gms.cast.MediaStatus;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
@@ -24,6 +26,7 @@ import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerIm
 import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -41,6 +44,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     private IVideoCastConsumer mCastConsumer;
     private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
+    boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
     /*
      * (non-Javadoc)
@@ -81,7 +85,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
 
             @Override
             public void onCastDeviceDetected(final RouteInfo info) {
-                if (!CastPreference.isFtuShown(VideoBrowserActivity.this)) {
+                if (!CastPreference.isFtuShown(VideoBrowserActivity.this) && mIsHoneyCombOrAbove) {
                     CastPreference.setFtuShown(VideoBrowserActivity.this);
 
                     Log.d(TAG, "Route is visible: " + info);
@@ -132,6 +136,10 @@ public class VideoBrowserActivity extends ActionBarActivity {
     }
 
     private void showFtu() {
+        new ShowcaseView.Builder(this)
+                .setTarget(new ActionViewTarget(this, ActionViewTarget.Type.MEDIA_ROUTE_BUTTON))
+                .setContentTitle(R.string.touch_to_cast)
+                .build();
     }
 
     @Override

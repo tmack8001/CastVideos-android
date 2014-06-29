@@ -3,19 +3,22 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 10
@@ -38,4 +41,5 @@ android {
 dependencies {
     compile files('libs/android-query.0.25.10.jar')
     compile project(':..:CastCompanionLibrary')
+    compile 'com.github.amlcurran.showcaseview:ShowCaseLibrary@aar'
 }

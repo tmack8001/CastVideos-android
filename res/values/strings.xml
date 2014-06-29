@@ -58,4 +58,6 @@
     <string name="tab_music_title">Songs</string>
     <string name="tab_photos_title">Photos</string>
 
+    <!-- ShowCaseView -->
+    <string name="touch_to_cast">Touch to cast videos to your TV</string>
 </resources>
