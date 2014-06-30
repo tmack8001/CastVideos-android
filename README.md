@@ -43,6 +43,7 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
  MIN_SDK version: the forked and original projects require an API level > 10; if you need your project to run on a device with the API level 10, then
  your build may fail. To get around that, you would need to change the MIN_SDK in the forked project to 10. The included AAR library includes this change and should run on
  devices with API levels >= 10 but this feature will be hidden for level 10 and only shows up in API levels >= 11.
+
 1.0 -> 1.1
  * Updated the Cast button images to match the new style
  * Addressed a couple of potential leaks
