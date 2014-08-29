@@ -174,16 +174,6 @@ public class Utils {
     }
 
     /**
-     * Shows a (long) toast
-     *
-     * @param context
-     * @param msg
-     */
-    public static void showToast(Context context, String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-    }
-
-    /**
      * Shows a (long) toast.
      *
      * @param context

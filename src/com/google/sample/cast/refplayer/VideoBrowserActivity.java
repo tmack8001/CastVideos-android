@@ -16,14 +16,14 @@
 
 package com.google.sample.cast.refplayer;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.google.android.gms.cast.MediaStatus;
 import com.google.sample.cast.refplayer.settings.CastPreference;
 import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.IVideoCastConsumer;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.widgets.MiniController;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 
 import android.content.Intent;
 import android.os.Build;
@@ -143,35 +143,11 @@ public class VideoBrowserActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mCastManager.isConnected()) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                changeVolume(CastApplication.VOLUME_INCREMENT);
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                changeVolume(-CastApplication.VOLUME_INCREMENT);
-            } else {
-                // we don't want to consume non-volume key events
-                return super.onKeyDown(keyCode, event);
-            }
-            if (mCastManager.getPlaybackStatus() == MediaStatus.PLAYER_STATE_PLAYING) {
-                return super.onKeyDown(keyCode, event);
-            } else {
-                return true;
-            }
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (mCastManager.onDispatchVolumeKeyEvent(event, CastApplication.VOLUME_INCREMENT)) {
+            return true;
         }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void changeVolume(double volumeIncrement) {
-        if (mCastManager == null) {
-            return;
-        }
-        try {
-            mCastManager.incrementVolume(volumeIncrement);
-        } catch (Exception e) {
-            Log.e(TAG, "onVolumeChange() Failed to change volume", e);
-            com.google.sample.cast.refplayer.utils.Utils.handleException(this, e);
-        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

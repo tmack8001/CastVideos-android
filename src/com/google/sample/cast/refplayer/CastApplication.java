@@ -30,7 +30,6 @@ public class CastApplication extends Application {
     private static String APPLICATION_ID;
     private static VideoCastManager mCastMgr = null;
     public static final double VOLUME_INCREMENT = 0.05;
-    private static Context mAppContext;
 
     /*
      * (non-Javadoc)
@@ -39,7 +38,6 @@ public class CastApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mAppContext = getApplicationContext();
         APPLICATION_ID = getString(R.string.app_id);
         Utils.saveFloatToPreference(getApplicationContext(),
                 VideoCastManager.PREFS_KEY_VOLUME_INCREMENT, (float) VOLUME_INCREMENT);
@@ -48,11 +46,11 @@ public class CastApplication extends Application {
 
     public static VideoCastManager getCastManager(Context context) {
         if (null == mCastMgr) {
-            mCastMgr = VideoCastManager.initialize(context, APPLICATION_ID,
-                    null, null);
+            mCastMgr = VideoCastManager.initialize(context, APPLICATION_ID, null, null);
             mCastMgr.enableFeatures(
                     VideoCastManager.FEATURE_NOTIFICATION |
                             VideoCastManager.FEATURE_LOCKSCREEN |
+                            VideoCastManager.FEATURE_WIFI_RECONNECT |
                             VideoCastManager.FEATURE_DEBUGGING);
 
         }

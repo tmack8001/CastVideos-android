@@ -16,6 +16,19 @@
 
 package com.google.sample.cast.refplayer.mediaplayer;
 
+import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.sample.cast.refplayer.CastApplication;
+import com.google.sample.cast.refplayer.R;
+import com.google.sample.cast.refplayer.settings.CastPreference;
+import com.google.sample.cast.refplayer.utils.Utils;
+import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
+import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.sample.castcompanionlibrary.widgets.MiniController;
+
+import com.androidquery.AQuery;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -46,19 +59,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.VideoView;
-
-import com.androidquery.AQuery;
-import com.google.android.gms.cast.ApplicationMetadata;
-import com.google.android.gms.cast.MediaInfo;
-import com.google.android.gms.cast.MediaMetadata;
-import com.google.android.gms.cast.MediaStatus;
-import com.google.sample.cast.refplayer.CastApplication;
-import com.google.sample.cast.refplayer.R;
-import com.google.sample.cast.refplayer.settings.CastPreference;
-import com.google.sample.cast.refplayer.utils.Utils;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -174,7 +174,6 @@ public class LocalPlayerActivity extends ActionBarActivity {
                         } catch (Exception e) {
                             Utils.handleException(LocalPlayerActivity.this, e);
                         }
-                        return;
                     } else {
                         updatePlaybackLocation(PlaybackLocation.REMOTE);
                     }
@@ -279,6 +278,11 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 switch (mLocation) {
                     case LOCAL:
                         mVideoView.start();
+                        if (!mCastManager.isConnecting() ) {
+                            Log.d(TAG, "Playing locally...");
+                            mCastManager.clearPersistedConnectionInfo(
+                                    VideoCastManager.CLEAR_SESSION);
+                        }
                         mPlaybackState = PlaybackState.PLAYING;
                         startControllersTimer();
                         restartTrickplayTimer();
@@ -287,6 +291,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
                     case REMOTE:
                         try {
                             mCastManager.checkConnectivity();
+                            Log.d(TAG, "Playing remotely...");
                             loadRemoteMedia(0, true);
                             finish();
                         } catch (Exception e) {
@@ -305,6 +310,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 break;
 
             case IDLE:
+                mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
                 mVideoView.seekTo(0);
                 mVideoView.start();
                 mPlaybackState = PlaybackState.PLAYING;
@@ -484,7 +490,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 Utils.showErrorDialog(LocalPlayerActivity.this, msg);
                 mVideoView.stopPlayback();
                 mPlaybackState = PlaybackState.IDLE;
-                return false;
+                updatePlayButton(mPlaybackState);
+                return true;
             }
         });
 
@@ -529,6 +536,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if (mPlaybackState == PlaybackState.PLAYING) {
                     play(seekBar.getProgress());
+                } else if (mPlaybackState == PlaybackState.IDLE) {
+                    // do nothing
                 } else {
                     mVideoView.seekTo(seekBar.getProgress());
                 }
@@ -560,34 +569,11 @@ public class LocalPlayerActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mCastManager.isConnected()) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                onVolumeChange(CastApplication.VOLUME_INCREMENT);
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                onVolumeChange(-CastApplication.VOLUME_INCREMENT);
-            } else {
-                // we don't want to consume non-volume key events
-                return super.onKeyDown(keyCode, event);
-            }
-            if (mCastManager.getPlaybackStatus() == MediaStatus.PLAYER_STATE_PLAYING) {
-                return super.onKeyDown(keyCode, event);
-            } else {
-                return true;
-            }
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (mCastManager.onDispatchVolumeKeyEvent(event, CastApplication.VOLUME_INCREMENT)) {
+            return true;
         }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void onVolumeChange(double volumeIncrement) {
-        if (mCastManager == null) {
-            return;
-        }
-        try {
-            mCastManager.incrementVolume(volumeIncrement);
-        } catch (Exception e) {
-            Log.e(TAG, "onVolumeChange() Failed to change volume", e);
-        }
+        return super.dispatchKeyEvent(event);
     }
 
     private void updateSeekbar(int position, int duration) {
