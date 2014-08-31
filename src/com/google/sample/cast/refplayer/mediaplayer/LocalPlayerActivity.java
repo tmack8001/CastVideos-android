@@ -536,9 +536,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if (mPlaybackState == PlaybackState.PLAYING) {
                     play(seekBar.getProgress());
-                } else if (mPlaybackState == PlaybackState.IDLE) {
-                    // do nothing
-                } else {
+                } else if (mPlaybackState != PlaybackState.IDLE) {
                     mVideoView.seekTo(seekBar.getProgress());
                 }
                 startControllersTimer();

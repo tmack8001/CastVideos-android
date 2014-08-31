@@ -89,8 +89,7 @@
             </intent-filter>
         </service>
 
-        <service android:name="com.google.sample.castcompanionlibrary.cast.reconnection.ReconnectionService">
-        </service>
+        <service android:name="com.google.sample.castcompanionlibrary.cast.reconnection.ReconnectionService"/>
     </application>
 
 </manifest>
