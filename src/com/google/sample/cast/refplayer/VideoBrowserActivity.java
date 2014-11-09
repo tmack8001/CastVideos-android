@@ -22,20 +22,23 @@ import com.google.sample.castcompanionlibrary.cast.callbacks.IVideoCastConsumer;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 public class VideoBrowserActivity extends ActionBarActivity {
 
@@ -45,6 +48,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
     private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
     boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    private Toolbar mToolbar;
 
     /*
      * (non-Javadoc)
@@ -55,7 +59,6 @@ public class VideoBrowserActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         VideoCastManager.checkGooglePlayServices(this);
         setContentView(R.layout.video_browser);
-        ActionBar actionBar = getSupportActionBar();
 
         mCastManager = CastApplication.getCastManager(this);
 
@@ -103,21 +106,22 @@ public class VideoBrowserActivity extends ActionBarActivity {
             }
         };
 
-        setupActionBar(actionBar);
+        setupActionBar();
+
         mCastManager.reconnectSessionIfPossible(this, false);
     }
 
-    private void setupActionBar(ActionBar actionBar) {
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getSupportActionBar().setIcon(R.drawable.actionbar_logo_castvideos);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    private void setupActionBar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setLogo(R.drawable.actionbar_logo_castvideos);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
-
         mediaRouteMenuItem = mCastManager.
                 addMediaRouterButton(menu, R.id.media_route_menu_item);
 
@@ -135,11 +139,20 @@ public class VideoBrowserActivity extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * The getActionView() method used in this method requires API 11 or above. If one needs to
+     * extend this below that version, one possible solution could be using reflection and such.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void showFtu() {
-        new ShowcaseView.Builder(this)
-                .setTarget(new ActionViewTarget(this, ActionViewTarget.Type.MEDIA_ROUTE_BUTTON))
+        Menu menu = mToolbar.getMenu();
+        View view = menu.findItem(R.id.media_route_menu_item).getActionView();
+        if (view != null && view instanceof MediaRouteButton) {
+                    new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(view))
                 .setContentTitle(R.string.touch_to_cast)
                 .build();
+        }
     }
 
     @Override

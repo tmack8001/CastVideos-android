@@ -27,8 +27,6 @@ import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
 import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.sample.castcompanionlibrary.widgets.MiniController;
 
-import com.androidquery.AQuery;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -42,6 +40,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -59,6 +58,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.androidquery.AQuery;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -435,6 +436,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         Log.d(TAG, "onResume() was called");
         mCastManager = CastApplication.getCastManager(this);
         mCastManager.addVideoCastConsumer(mCastConsumer);
+        mMini.setOnMiniControllerChangedListener(mCastManager);
         mCastManager.incrementUiCounter();
         super.onResume();
     }
@@ -685,12 +687,9 @@ public class LocalPlayerActivity extends ActionBarActivity {
     }
 
     private void setupActionBar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayUseLogoEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setBackgroundDrawable(
-                getResources().getDrawable(R.drawable.ab_transparent_democastoverlay));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
     }
 
     private void loadViews() {

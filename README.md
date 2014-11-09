@@ -4,17 +4,29 @@ CastVideos-android application shows how to cast videos from an android device i
 
 ## Dependencies
 * CastCompanionLibrary-android: can be downloaded here at https://github.com/googlecast/CastCompanionLibrary-android
-* ShowcaseView (see change list 1.1 -> 1.2 for details)
+* ShowcaseView: can be downloaded at https://github.com/amlcurran/ShowcaseView (see change list 1.2 for details)
 
 ## Setup Instructions
 * Get a Chromecast device and set it up
-* Register an application on the Developers Console (http://cast.google.com/publish). The easiest would be to use the Styled Media Receiver option there.
-You will get an App ID when you finish registering your application.
+* [Optional] Register an application on the Developers Console (http://cast.google.com/publish). The easiest would be to use the Styled Media Receiver option there.
+You will get an App ID when you finish registering your application. This project uses a published Application ID that
+can be used to run the app without using your own ID but if you need to do any console debugging, you would need
+to have your own ID.
 * Setup the project dependencies
+  * For Eclipse: you need to setup the above dependencies manually. For ShowcaseView Library, see the additional comments
+  below in the Change List 1.2.
+  * For Android Studio: make sure you are running at least version 0.9.1 (it may work on earlier versions). Dependencies are
+   setup in the build.gradle file and the settings.gradle; it assumes you have cloned the CastCompanionLibrary-android project
+   into a parallel project named "CastCompanionLibrary". If you want to change the name, make sure it gets updated in both
+   settings.gradle and build.gradle. Quick steps to clone and compile the app from command line (on a Linux or Mac) are:
+     * $ git clone https://github.com/googlecast/CastVideos-android.git CastVideos
+     * $ git clone https://github.com/googlecast/CastCompanionLibrary-android.git CastCompanionLibrary
+     * $ cd CastVideos
+     * $ gradle/gradlew build
 * Compile and deploy to your Android device.
-* If using gradle, make sure you update build.gradle and settings.gradle to reflect the name you gave your CastCompanionLibrary project when you cloned it.
 * This sample includes a published app id in the res/values/strings.xml file so the project can be built and run without a need
-   to register an app id. If you want to use your own receiver, update "app_id" in that file with your own app id.
+   to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
+    update "app_id" in that file with your own app id.
 
 ## References and How to report bugs
 * [Cast Developer Documentation](http://developers.google.com/cast/)
@@ -32,6 +44,10 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+1.4
+ * Added support for Android Lollipop. Toolbar has now replaced ActionBar in the project.
+ * Updated android Studio support and gradle scripts and wrapper to gradle 2.1, gradle tools plugin 0.14 and Android Studio 0.9.1
+
 1.3
  * Added support for Closed Captions based on enhancements made in CCL. Three new videos have been
    added to the beginning of the list of videos; these three include captions. 
@@ -39,14 +55,10 @@ Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl
 1.2
  * Updated the build.gradle to work with the latest version of the Android Studio Beta (0.8.1). You may need to upgrade your
  Android Studio to be abe to work with this project.
- * Added a first-time introductory UI for the Cast Button. This is accomplished by using a [fork] (https://github.com/naddaf/ShowcaseView) of
- [ShowcaseView project] (https://github.com/amlcurran/ShowcaseView). That fork adds support for the MediaRouteButton as an ActionViewTarget.
- A pull request has also been submitted to the original project; if that gets merged in, the CastVideos project will be updated to include that dependency purely
- through the maven. Till then, that dependency is provided by inclusion of the forked library as an AAR file in the libs directory.
- If you are using Eclipse, you would need to get the forked project and include that as a library project yourself. If you decide to do so, be mindful of the
- MIN_SDK version: the forked and original projects require an API level > 10; if you need your project to run on a device with the API level 10, then
- your build may fail. To get around that, you would need to change the MIN_SDK in the forked project to 10. The included AAR library includes this change and should run on
- devices with API levels >= 10 but this feature will be hidden for level 10 and only shows up in API levels >= 11.
+ * Added a first-time introductory UI for the Cast Button. This is accomplished by using
+ [ShowcaseView project] (https://github.com/amlcurran/ShowcaseView).
+ If you are using Eclipse, you would need to get the project and include that as a library project yourself.
+ For Android Studio, an AAR package of the library is included.
 
 1.1
  * Updated the Cast button images to match the new style
