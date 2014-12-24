@@ -51,7 +51,7 @@ public class CastPreference extends PreferenceActivity
         addPreferencesFromResource(R.xml.application_preference);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        mCastManager = CastApplication.getCastManager(this);
+        mCastManager = CastApplication.getCastManager();
 
         // -- Termination Policy -------------------//
         mTerminationListPreference = (ListPreference) getPreferenceScreen().findPreference(

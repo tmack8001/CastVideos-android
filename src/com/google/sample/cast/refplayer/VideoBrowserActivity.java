@@ -60,7 +60,7 @@ public class VideoBrowserActivity extends ActionBarActivity {
         VideoCastManager.checkGooglePlayServices(this);
         setContentView(R.layout.video_browser);
 
-        mCastManager = CastApplication.getCastManager(this);
+        mCastManager = CastApplication.getCastManager();
 
         // -- Adding MiniController
         mMini = (MiniController) findViewById(R.id.miniController1);
@@ -97,18 +97,22 @@ public class VideoBrowserActivity extends ActionBarActivity {
                         @Override
                         public void run() {
                             if (mediaRouteMenuItem.isVisible()) {
-                                Log.d(TAG, "Cast Icon is visible: " + info.getName());
+                                Log.d(TAG, "Cast Icon is visible:  " + info.getName());
                                 showFtu();
                             }
                         }
                     }, 1000);
                 }
             }
+
+            @Override
+            public void onReconnectionStatusChanged(int status) {
+                Log.d(TAG, "onReconnectionStatusChanged(): " + status);
+            }
         };
 
         setupActionBar();
-
-        mCastManager.reconnectSessionIfPossible(this, false);
+        mCastManager.reconnectSessionIfPossible();
     }
 
     private void setupActionBar() {
@@ -148,10 +152,10 @@ public class VideoBrowserActivity extends ActionBarActivity {
         Menu menu = mToolbar.getMenu();
         View view = menu.findItem(R.id.media_route_menu_item).getActionView();
         if (view != null && view instanceof MediaRouteButton) {
-                    new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(view))
-                .setContentTitle(R.string.touch_to_cast)
-                .build();
+            new ShowcaseView.Builder(this)
+                    .setTarget(new ViewTarget(view))
+                    .setContentTitle(R.string.touch_to_cast)
+                    .build();
         }
     }
 
@@ -166,11 +170,9 @@ public class VideoBrowserActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
-        mCastManager = CastApplication.getCastManager(this);
-        if (null != mCastManager) {
-            mCastManager.addVideoCastConsumer(mCastConsumer);
-            mCastManager.incrementUiCounter();
-        }
+        mCastManager = CastApplication.getCastManager();
+        mCastManager.addVideoCastConsumer(mCastConsumer);
+        mCastManager.incrementUiCounter();
 
         super.onResume();
     }

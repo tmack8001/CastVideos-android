@@ -75,12 +75,12 @@ public class LocalPlayerActivity extends ActionBarActivity {
     private SeekBar mSeekbar;
     private ImageView mPlayPause;
     private ProgressBar mLoading;
-    private View mControlers;
+    private View mControllers;
     private View mContainer;
     private ImageView mCoverArt;
     private VideoCastManager mCastManager;
     private Timer mSeekbarTimer;
-    private Timer mControlersTimer;
+    private Timer mControllersTimer;
     private PlaybackLocation mLocation;
     private PlaybackState mPlaybackState;
     private final Handler mHandler = new Handler();
@@ -89,7 +89,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
     private AQuery mAquery;
     private MediaInfo mSelectedMedia;
     private boolean mShouldStartPlayback;
-    private boolean mControlersVisible;
+    private boolean mControllersVisible;
     private int mDuration;
     private MiniController mMini;
     protected MediaInfo mRemoteMediaInformation;
@@ -117,7 +117,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         setContentView(R.layout.player_activity);
         mAquery = new AQuery(this);
         loadViews();
-        mCastManager = CastApplication.getCastManager(this);
+        mCastManager = CastApplication.getCastManager();
         setupActionBar();
         setupControlsCallbacks();
         setupMiniController();
@@ -246,7 +246,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
             stopControllersTimer();
             setCoverArtStatus(com.google.sample.castcompanionlibrary.utils.Utils.
                     getImageUrl(mSelectedMedia, 0));
-            updateControlersVisibility(true);
+            updateControllersVisibility(true);
         }
     }
 
@@ -354,30 +354,30 @@ public class LocalPlayerActivity extends ActionBarActivity {
     }
 
     private void stopControllersTimer() {
-        if (null != mControlersTimer) {
-            mControlersTimer.cancel();
+        if (null != mControllersTimer) {
+            mControllersTimer.cancel();
         }
     }
 
     private void startControllersTimer() {
-        if (null != mControlersTimer) {
-            mControlersTimer.cancel();
+        if (null != mControllersTimer) {
+            mControllersTimer.cancel();
         }
         if (mLocation == PlaybackLocation.REMOTE) {
             return;
         }
-        mControlersTimer = new Timer();
-        mControlersTimer.schedule(new HideControllersTask(), 5000);
+        mControllersTimer = new Timer();
+        mControllersTimer.schedule(new HideControllersTask(), 5000);
     }
 
     // should be called from the main thread
-    private void updateControlersVisibility(boolean show) {
+    private void updateControllersVisibility(boolean show) {
         if (show) {
             getSupportActionBar().show();
-            mControlers.setVisibility(View.VISIBLE);
+            mControllers.setVisibility(View.VISIBLE);
         } else {
             getSupportActionBar().hide();
-            mControlers.setVisibility(View.INVISIBLE);
+            mControllers.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -391,8 +391,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
                 mSeekbarTimer.cancel();
                 mSeekbarTimer = null;
             }
-            if (null != mControlersTimer) {
-                mControlersTimer.cancel();
+            if (null != mControllersTimer) {
+                mControllersTimer.cancel();
             }
             // since we are playing locally, we need to stop the playback of
             // video (if user is not watching, pause it!)
@@ -434,7 +434,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
-        mCastManager = CastApplication.getCastManager(this);
+        mCastManager = CastApplication.getCastManager();
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mMini.setOnMiniControllerChangedListener(mCastManager);
         mCastManager.incrementUiCounter();
@@ -448,8 +448,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    updateControlersVisibility(false);
-                    mControlersVisible = false;
+                    updateControllersVisibility(false);
+                    mControllersVisible = false;
                 }
             });
 
@@ -524,8 +524,8 @@ public class LocalPlayerActivity extends ActionBarActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (!mControlersVisible) {
-                    updateControlersVisibility(true);
+                if (!mControllersVisible) {
+                    updateControllersVisibility(true);
                 }
                 startControllersTimer();
                 return false;
@@ -705,7 +705,7 @@ public class LocalPlayerActivity extends ActionBarActivity {
         mPlayPause = (ImageView) findViewById(R.id.imageView2);
         mLoading = (ProgressBar) findViewById(R.id.progressBar1);
         // mVolumeMute = (ImageView) findViewById(R.id.imageView2);
-        mControlers = findViewById(R.id.controllers);
+        mControllers = findViewById(R.id.controllers);
         mContainer = findViewById(R.id.container);
         mCoverArt = (ImageView) findViewById(R.id.coverArtView);
     }

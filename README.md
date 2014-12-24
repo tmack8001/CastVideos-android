@@ -51,6 +51,10 @@ See LICENSE
 Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
 
 ## Change List
+1.5
+ * Adapting to the CCL v1.12
+ * Fixing some typos
+ 
 1.4
  * Added support for Android Lollipop. Toolbar has now replaced ActionBar in the project.
  * Updated android Studio support and gradle scripts and wrapper to gradle 2.1, gradle tools plugin 0.14 and Android Studio 0.9.1
