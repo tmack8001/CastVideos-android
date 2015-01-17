@@ -29,7 +29,7 @@ to have your own ID.
      * $ git clone https://github.com/googlecast/CastVideos-android.git CastVideos
      * $ git clone https://github.com/googlecast/CastCompanionLibrary-android.git CastCompanionLibrary
      * $ cd CastVideos
-     * $ gradle/gradlew build
+     * $ ./gradlew build
 * Compile and deploy to your Android device.
 * This sample includes a published app id in the res/values/strings.xml file so the project can be built and run without a need
    to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
